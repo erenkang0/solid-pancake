@@ -1,0 +1,61 @@
+name: APK Derle
+
+on:
+  push:
+    branches:
+      - "claude/product-number-scanner-uxbk8q"
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Depoyu indir
+        uses: actions/checkout@v4
+
+      - name: Java 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Flutter kur
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.44.4"
+          channel: stable
+          cache: true
+
+      - name: Bağımlılıkları al
+        run: flutter pub get
+
+      - name: Statik analiz
+        run: flutter analyze
+
+      - name: Testler
+        run: flutter test
+
+      - name: Release APK derle
+        run: flutter build apk --release
+
+      - name: APK'yı artefakt olarak yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: kalip-takip-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+      - name: Release oluştur (kolay indirme)
+        if: github.ref == 'refs/heads/claude/product-number-scanner-uxbk8q' || github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "yapi-${{ github.run_number }}"
+          name: "Kalıp Takip APK (yapı ${{ github.run_number }})"
+          body: "Otomatik üretilen Android APK. Telefonunuza indirip kurabilirsiniz."
+          files: build/app/outputs/flutter-apk/app-release.apk
