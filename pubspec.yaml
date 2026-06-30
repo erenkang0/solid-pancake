@@ -1,0 +1,57 @@
+name: kalip_takip
+description: "Kalıp Takip — kamerayla numara okuyan, kod ve reyon bilgisini gösteren offline kalıp veritabanı."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # Durum yönetimi
+  flutter_riverpod: ^2.6.1
+
+  # Yerel veritabanı (offline)
+  sqflite: ^2.4.1
+  path_provider: ^2.1.5
+  path: ^1.9.0
+
+  # Kameradan rakam okuma (OCR) + barkod/QR
+  google_mlkit_text_recognition: ^0.13.1
+  mobile_scanner: ^6.0.6
+  camera: ^0.11.0+2
+
+  # Animasyonlar
+  flutter_animate: ^4.5.2
+
+  # QR etiket üretimi (saf Dart, native kod yok)
+  qr_flutter: ^4.1.0
+
+  # Fotoğraf ve yedekleme
+  image_picker: ^1.1.2
+  share_plus: ^10.1.4
+  file_selector: ^1.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  uses-material-design: true
+
+# Uygulama simgesi (logo) üretimi:
+#   dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/logo/logo_1024.png"
+  adaptive_icon_background: "assets/logo/logo_background_1024.png"
+  adaptive_icon_foreground: "assets/logo/logo_foreground_1024.png"
+  adaptive_icon_foreground_inset: 0
+  min_sdk_android: 24
