@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
+import 'package:file_selector/file_selector.dart' as fs;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -46,14 +46,15 @@ class BackupService {
   /// Kullanıcıdan bir JSON yedeği seçtirir ve kayıtları çözümler.
   /// Geçerli bir dosya seçilmezse `null` döner.
   static Future<List<Kalip>?> dosyadanOku() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
+    const typeGroup = fs.XTypeGroup(
+      label: 'JSON',
+      extensions: ['json'],
+      mimeTypes: ['application/json'],
     );
-    final path = result?.files.single.path;
-    if (path == null) return null;
+    final secilen = await fs.openFile(acceptedTypeGroups: [typeGroup]);
+    if (secilen == null) return null;
 
-    final content = await File(path).readAsString();
+    final content = await secilen.readAsString();
     final decoded = jsonDecode(content);
     if (decoded is! Map || decoded['kaliplar'] is! List) {
       throw const FormatException('Geçersiz yedek dosyası.');

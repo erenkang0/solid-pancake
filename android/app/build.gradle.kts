@@ -27,9 +27,12 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Kişisel kullanım için debug anahtarıyla imzalanır (keystore gerekmez).
             signingConfig = signingConfigs.getByName("debug")
+            // R8/minify kapalı: ML Kit'in kullanılmayan dil tanıyıcı sınıflarında
+            // R8 "missing class" hatası vermesini önler. APK biraz büyür, sorun değil.
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
     }
 }
