@@ -40,6 +40,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.1
 
 flutter:
   uses-material-design: true
+
+# Uygulama simgesi (logo) üretimi:
+#   dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/logo/logo_1024.png"
+  adaptive_icon_background: "assets/logo/logo_background_1024.png"
+  adaptive_icon_foreground: "assets/logo/logo_foreground_1024.png"
+  adaptive_icon_foreground_inset: 0
+  min_sdk_android: 24

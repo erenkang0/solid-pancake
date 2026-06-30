@@ -1,0 +1,16 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Adaptive icon ön planı: yalnız beyaz işaret, şeffaf zemin.
+       İçerik (240..784) Android güvenli alanı (orta ~%66 = 174..850) içinde kalır;
+       pubspec'te adaptive_icon_foreground_inset: 0 ile ek inset uygulanmaz. -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="34" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+    <path d="M240 360 L240 240 L360 240"/>
+    <path d="M664 240 L784 240 L784 360"/>
+    <path d="M240 664 L240 784 L360 784"/>
+    <path d="M784 664 L784 784 L664 784"/>
+  </g>
+  <g fill="none" stroke="#FFFFFF" stroke-width="58" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M430 352 L430 672"/>
+    <path d="M430 512 L602 352"/>
+    <path d="M430 512 L602 672"/>
+  </g>
+</svg>
