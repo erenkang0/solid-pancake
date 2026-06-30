@@ -86,6 +86,12 @@ class KalipCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (kalip.favori)
+                const Padding(
+                  padding: EdgeInsets.only(right: 2),
+                  child: Icon(Icons.star_rounded,
+                      color: AppColors.amber, size: 20),
+                ),
               const Icon(Icons.chevron_right_rounded),
             ],
           ),

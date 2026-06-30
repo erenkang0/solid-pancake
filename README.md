@@ -19,6 +19,16 @@ anında gösteren, **tamamen çevrimdışı** çalışan bir Android veritabanı
 - 💾 **Yedekleme:** Tüm kayıtları JSON dosyası olarak dışa/içe aktarma.
 - 🎬 **Akıcı animasyonlar:** Geçişler, tarama efektleri, başarı animasyonları, koyu/açık tema.
 
+### ✨ Ek özellikler
+
+- ⭐ **Favoriler:** Sık kullanılan kalıpları yıldızlayın; listede öne çıkar.
+- 🔳 **QR etiket üretici:** Her kalıp için yazdırılabilir/paylaşılabilir QR etiket oluşturun, yapıştırın ve sonra QR moduyla güvenle okuyun.
+- 🗄️ **Reyon görünümü:** Kalıpları rafa (reyona) göre gruplayıp “hangi rafta ne var” görün.
+- 📊 **İstatistik panosu:** Toplam kalıp, reyon ve favori sayıları + reyon dağılımı (animasyonlu).
+- ↕️ **Sıralama & filtre:** Numara/kod/reyon/tarihe göre sıralama; reyona ve favoriye göre süzme.
+- 📳 **Titreşimli geri bildirim:** Eşleşme/kayıt/bulunamadı durumlarında haptik.
+- 📄 **CSV dışa aktarma** (Excel/Sheets) ve 📋 **panoya kopyalama** (kod/reyona dokununca).
+
 ## 📲 Uygulamayı telefona kurma (APK)
 
 APK'yı sizin için **GitHub otomatik olarak derler** — bilgisayara hiçbir şey kurmanız

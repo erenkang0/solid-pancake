@@ -87,6 +87,29 @@ class SettingsScreen extends ConsumerWidget {
     }
   }
 
+  Future<void> _csvAktar(BuildContext context, WidgetRef ref) async {
+    final repo = ref.read(repositoryProvider);
+    if (await repo.sayi() == 0) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Dışa aktarılacak kayıt yok.')),
+        );
+      }
+      return;
+    }
+    try {
+      final csv = await repo.csv();
+      final dosya = await BackupService.csvDosyasiOlustur(csv);
+      await BackupService.paylas(dosya);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('CSV aktarılamadı: $e')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mode = ref.watch(themeModeProvider);
@@ -156,6 +179,15 @@ class SettingsScreen extends ConsumerWidget {
                       subtitle:
                           const Text('JSON yedeğinden kayıtları geri yükle'),
                       onTap: () => _iceAktar(context, ref),
+                    ),
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(Icons.table_chart_rounded,
+                          color: AppColors.yesil),
+                      title: const Text('CSV olarak dışa aktar'),
+                      subtitle:
+                          const Text('Excel/Sheets için tablo dosyası'),
+                      onTap: () => _csvAktar(context, ref),
                     ),
                   ],
                 ),

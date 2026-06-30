@@ -10,6 +10,7 @@ class Kalip {
   final String? ad;
   final String? notlar;
   final String? fotoYolu;
+  final bool favori;
   final DateTime olusturma;
   final DateTime guncelleme;
 
@@ -21,6 +22,7 @@ class Kalip {
     this.ad,
     this.notlar,
     this.fotoYolu,
+    this.favori = false,
     required this.olusturma,
     required this.guncelleme,
   });
@@ -33,6 +35,7 @@ class Kalip {
     String? ad,
     String? notlar,
     String? fotoYolu,
+    bool? favori,
     DateTime? olusturma,
     DateTime? guncelleme,
     bool fotoYoluTemizle = false,
@@ -45,6 +48,7 @@ class Kalip {
       ad: ad ?? this.ad,
       notlar: notlar ?? this.notlar,
       fotoYolu: fotoYoluTemizle ? null : (fotoYolu ?? this.fotoYolu),
+      favori: favori ?? this.favori,
       olusturma: olusturma ?? this.olusturma,
       guncelleme: guncelleme ?? this.guncelleme,
     );
@@ -60,6 +64,7 @@ class Kalip {
       'ad': ad,
       'notlar': notlar,
       'fotoYolu': fotoYolu,
+      'favori': favori ? 1 : 0,
       'olusturma': olusturma.millisecondsSinceEpoch,
       'guncelleme': guncelleme.millisecondsSinceEpoch,
     };
@@ -74,6 +79,7 @@ class Kalip {
       ad: m['ad'] as String?,
       notlar: m['notlar'] as String?,
       fotoYolu: m['fotoYolu'] as String?,
+      favori: ((m['favori'] as int?) ?? 0) == 1,
       olusturma:
           DateTime.fromMillisecondsSinceEpoch((m['olusturma'] as int?) ?? 0),
       guncelleme:
@@ -90,6 +96,7 @@ class Kalip {
       'reyon': reyon,
       'ad': ad,
       'notlar': notlar,
+      'favori': favori,
       'olusturma': olusturma.millisecondsSinceEpoch,
       'guncelleme': guncelleme.millisecondsSinceEpoch,
     };
@@ -103,10 +110,23 @@ class Kalip {
       reyon: (j['reyon'] as String?)?.trim() ?? '',
       ad: (j['ad'] as String?)?.trim(),
       notlar: (j['notlar'] as String?)?.trim(),
+      favori: (j['favori'] as bool?) ?? false,
       olusturma:
           DateTime.fromMillisecondsSinceEpoch((j['olusturma'] as int?) ?? now),
       guncelleme:
           DateTime.fromMillisecondsSinceEpoch((j['guncelleme'] as int?) ?? now),
     );
+  }
+
+  /// CSV satırı (numara,kod,reyon,ad,favori).
+  static String csvBaslik() => 'numara,kod,reyon,ad,favori';
+
+  String csvSatir() {
+    String q(String? s) {
+      final v = (s ?? '').replaceAll('"', '""');
+      return '"$v"';
+    }
+
+    return '${q(numara)},${q(kod)},${q(reyon)},${q(ad)},${favori ? 'evet' : 'hayır'}';
   }
 }

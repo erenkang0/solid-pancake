@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -35,6 +36,7 @@ class _EditScreenState extends ConsumerState<EditScreen> {
   late final TextEditingController _notlar;
 
   String? _fotoYolu;
+  bool _favori = false;
   bool _kaydediliyor = false;
 
   bool get _duzenleme => widget.mevcut != null;
@@ -49,6 +51,7 @@ class _EditScreenState extends ConsumerState<EditScreen> {
     _ad = TextEditingController(text: m?.ad ?? '');
     _notlar = TextEditingController(text: m?.notlar ?? '');
     _fotoYolu = m?.fotoYolu;
+    _favori = m?.favori ?? false;
   }
 
   @override
@@ -137,6 +140,7 @@ class _EditScreenState extends ConsumerState<EditScreen> {
       ad: _ad.text.trim().isEmpty ? null : _ad.text.trim(),
       notlar: _notlar.text.trim().isEmpty ? null : _notlar.text.trim(),
       fotoYolu: _fotoYolu,
+      favori: _favori,
       olusturma: widget.mevcut?.olusturma ?? simdi,
       guncelleme: simdi,
     );
@@ -162,6 +166,7 @@ class _EditScreenState extends ConsumerState<EditScreen> {
   }
 
   Future<void> _basariGoster() async {
+    HapticFeedback.mediumImpact();
     showGeneralDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -241,6 +246,21 @@ class _EditScreenState extends ConsumerState<EditScreen> {
                   etiket: 'Notlar',
                   ikon: Icons.sticky_note_2_outlined,
                   satir: 3,
+                ),
+                const SizedBox(height: 14),
+                Card(
+                  child: SwitchListTile(
+                    value: _favori,
+                    onChanged: (v) => setState(() => _favori = v),
+                    secondary: Icon(
+                      _favori
+                          ? Icons.star_rounded
+                          : Icons.star_outline_rounded,
+                      color: _favori ? AppColors.amber : null,
+                    ),
+                    title: const Text('Favori'),
+                    subtitle: const Text('Sık kullanılanlarda öne çıksın'),
+                  ),
                 ),
                 const SizedBox(height: 26),
                 FilledButton.icon(

@@ -8,7 +8,7 @@ class AppDatabase {
   static final AppDatabase instance = AppDatabase._();
 
   static const _dbName = 'kalip_takip.db';
-  static const _dbVersion = 1;
+  static const _dbVersion = 2;
   static const tableKalip = 'kalip';
 
   Database? _db;
@@ -36,12 +36,20 @@ class AppDatabase {
             ad TEXT,
             notlar TEXT,
             fotoYolu TEXT,
+            favori INTEGER NOT NULL DEFAULT 0,
             olusturma INTEGER NOT NULL,
             guncelleme INTEGER NOT NULL
           )
         ''');
         await db
             .execute('CREATE INDEX idx_kalip_numara ON $tableKalip(numara)');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute(
+            'ALTER TABLE $tableKalip ADD COLUMN favori INTEGER NOT NULL DEFAULT 0',
+          );
+        }
       },
     );
   }

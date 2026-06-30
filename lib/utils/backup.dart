@@ -34,6 +34,15 @@ class BackupService {
     return file;
   }
 
+  /// Kayıtları CSV (Excel uyumlu) dosyasına yazar ve dosyayı döndürür.
+  static Future<File> csvDosyasiOlustur(String csv) async {
+    final dir = await getTemporaryDirectory();
+    final file = File(p.join(dir.path, 'kaliplar.csv'));
+    // Excel'in Türkçe karakterleri doğru okuması için UTF-8 BOM eklenir.
+    await file.writeAsString('﻿$csv');
+    return file;
+  }
+
   /// Yedek dosyasını paylaşım menüsüyle dışa aktarır.
   static Future<void> paylas(File file) async {
     await Share.shareXFiles(

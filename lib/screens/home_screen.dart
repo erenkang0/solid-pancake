@@ -10,8 +10,10 @@ import '../widgets/kalip_card.dart';
 import 'detail_screen.dart';
 import 'edit_screen.dart';
 import 'list_screen.dart';
+import 'reyon_screen.dart';
 import 'scanner_screen.dart';
 import 'settings_screen.dart';
+import 'stats_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -92,6 +94,49 @@ class HomeScreen extends ConsumerWidget {
                     .animate()
                     .fadeIn(delay: 220.ms)
                     .moveY(begin: 14, end: 0),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _NavTile(
+                        ikon: Icons.grid_view_rounded,
+                        renk: AppColors.camgobegi,
+                        etiket: 'Reyonlar',
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const ReyonScreen()),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _NavTile(
+                        ikon: Icons.bar_chart_rounded,
+                        renk: AppColors.morAcik,
+                        etiket: 'İstatistik',
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const StatsScreen()),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _NavTile(
+                        ikon: Icons.star_rounded,
+                        renk: AppColors.amber,
+                        etiket: 'Favoriler',
+                        onTap: () {
+                          ref.read(sadeceFavoriProvider.notifier).state = true;
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) => const ListScreen()),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ).animate().fadeIn(delay: 300.ms).moveY(begin: 14, end: 0),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,9 +149,14 @@ class HomeScreen extends ConsumerWidget {
                           ?.copyWith(fontWeight: FontWeight.w800),
                     ),
                     TextButton.icon(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const ListScreen()),
-                      ),
+                      onPressed: () {
+                        ref.read(sadeceFavoriProvider.notifier).state = false;
+                        ref.read(reyonFiltreProvider.notifier).state = null;
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const ListScreen()),
+                        );
+                      },
                       icon: const Text('Tümü'),
                       label: const Icon(Icons.arrow_forward_rounded, size: 18),
                     ),
@@ -286,6 +336,43 @@ class _TaraButonu extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavTile extends StatelessWidget {
+  const _NavTile({
+    required this.ikon,
+    required this.renk,
+    required this.etiket,
+    required this.onTap,
+  });
+
+  final IconData ikon;
+  final Color renk;
+  final String etiket;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 6),
+          child: Column(
+            children: [
+              Icon(ikon, color: renk, size: 26),
+              const SizedBox(height: 8),
+              Text(
+                etiket,
+                style: const TextStyle(
+                    fontWeight: FontWeight.w700, fontSize: 13),
+              ),
+            ],
+          ),
         ),
       ),
     );

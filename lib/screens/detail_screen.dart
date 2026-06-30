@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,6 +11,7 @@ import '../theme/app_theme.dart';
 import '../utils/format.dart';
 import '../widgets/gradient_background.dart';
 import 'edit_screen.dart';
+import 'qr_screen.dart';
 
 class DetailScreen extends ConsumerStatefulWidget {
   const DetailScreen({super.key, required this.kalipId});
@@ -26,6 +28,24 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
   late Future<Kalip?> _future = _yukle();
 
   void _yenile() => setState(() => _future = _yukle());
+
+  Future<void> _favoriDegistir(Kalip k) async {
+    HapticFeedback.selectionClick();
+    await ref.read(repositoryProvider).favoriDegistir(k.id!, !k.favori);
+    kalipVerisiniYenile(ref);
+    _yenile();
+  }
+
+  Future<void> _kopyala(String etiket, String deger) async {
+    if (deger.isEmpty || deger == '—') return;
+    await Clipboard.setData(ClipboardData(text: deger));
+    HapticFeedback.selectionClick();
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$etiket kopyalandı: $deger')),
+      );
+    }
+  }
 
   Future<void> _sil(Kalip k) async {
     final onay = await showDialog<bool>(
@@ -116,7 +136,42 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                       ],
                     ),
                   ).animate().fadeIn().moveY(begin: 10, end: 0),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () => _favoriDegistir(k),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor:
+                              k.favori ? AppColors.amber : null,
+                          side: BorderSide(
+                            color: k.favori
+                                ? AppColors.amber
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .outline
+                                    .withValues(alpha: 0.5),
+                          ),
+                        ),
+                        icon: Icon(k.favori
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded),
+                        label: Text(k.favori ? 'Favori' : 'Favorile'),
+                      ),
+                      const SizedBox(width: 12),
+                      FilledButton.icon(
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => QrScreen(kalip: k),
+                          ),
+                        ),
+                        icon: const Icon(Icons.qr_code_2_rounded),
+                        label: const Text('QR Etiket'),
+                      ),
+                    ],
+                  ).animate().fadeIn(delay: 80.ms),
+                  const SizedBox(height: 18),
                   Row(
                     children: [
                       Expanded(
@@ -125,6 +180,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                           renk: AppColors.morAcik,
                           baslik: 'KOD',
                           deger: k.kod.isEmpty ? '—' : k.kod,
+                          onTap: () => _kopyala('Kod', k.kod),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -134,6 +190,7 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
                           renk: AppColors.camgobegi,
                           baslik: 'REYON',
                           deger: k.reyon.isEmpty ? '—' : k.reyon,
+                          onTap: () => _kopyala('Reyon', k.reyon),
                         ),
                       ),
                     ],
@@ -252,43 +309,59 @@ class _DetailScreenState extends ConsumerState<DetailScreen> {
     required Color renk,
     required String baslik,
     required String deger,
+    VoidCallback? onTap,
   }) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: renk.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: renk.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(ikon, color: renk),
+                  ),
+                  const Spacer(),
+                  if (onTap != null)
+                    Icon(Icons.copy_rounded,
+                        size: 16,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withValues(alpha: 0.4)),
+                ],
               ),
-              child: Icon(ikon, color: renk),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              baslik,
-              style: TextStyle(
-                letterSpacing: 1.5,
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: Theme.of(context)
-                    .colorScheme
-                    .onSurface
-                    .withValues(alpha: 0.6),
+              const SizedBox(height: 12),
+              Text(
+                baslik,
+                style: TextStyle(
+                  letterSpacing: 1.5,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.6),
+                ),
               ),
-            ),
-            const SizedBox(height: 2),
-            Text(
-              deger,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  fontSize: 22, fontWeight: FontWeight.w900),
-            ),
-          ],
+              const SizedBox(height: 2),
+              Text(
+                deger,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    fontSize: 22, fontWeight: FontWeight.w900),
+              ),
+            ],
+          ),
         ),
       ),
     );

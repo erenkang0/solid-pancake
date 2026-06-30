@@ -28,6 +28,9 @@ dependencies:
   # Animasyonlar
   flutter_animate: ^4.5.2
 
+  # QR etiket üretimi (saf Dart, native kod yok)
+  qr_flutter: ^4.1.0
+
   # Fotoğraf ve yedekleme
   image_picker: ^1.1.2
   share_plus: ^10.1.4

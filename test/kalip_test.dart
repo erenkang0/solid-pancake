@@ -11,6 +11,7 @@ void main() {
       reyon: 'B12',
       ad: 'Ön kapak kalıbı',
       notlar: 'Kenarda çapak var',
+      favori: true,
       olusturma: DateTime.fromMillisecondsSinceEpoch(1000),
       guncelleme: DateTime.fromMillisecondsSinceEpoch(2000),
     );
@@ -22,8 +23,21 @@ void main() {
       expect(geri.kod, 'ABC123');
       expect(geri.reyon, 'B12');
       expect(geri.ad, 'Ön kapak kalıbı');
+      expect(geri.favori, isTrue);
       expect(geri.olusturma, ornek.olusturma);
       expect(geri.guncelleme, ornek.guncelleme);
+    });
+
+    test('favori SQLite tamsayısı (1/0) olarak saklanır', () {
+      expect(ornek.toMap()['favori'], 1);
+      expect(ornek.copyWith(favori: false).toMap()['favori'], 0);
+    });
+
+    test('CSV satırı alanları tırnaklar ve favoriyi içerir', () {
+      final satir = ornek.csvSatir();
+      expect(satir.startsWith('"K-204","ABC123","B12"'), isTrue);
+      expect(satir.endsWith('evet'), isTrue);
+      expect(Kalip.csvBaslik(), 'numara,kod,reyon,ad,favori');
     });
 
     test('toJson fotoğraf yolunu dahil etmez', () {
